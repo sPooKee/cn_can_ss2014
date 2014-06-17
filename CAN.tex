@@ -1,0 +1,65 @@
+\documentclass[12pt,a4paper]{scrartcl}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+
+\title{CAN Bus over Ethernet}
+
+\author{R. Löffler, C. Proske, M. Sharkhawy}
+
+\date{\today}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[babel,german=quotes]{csquotes}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{icomma}
+\usepackage[textsize=footnotesize]{todonotes}
+\usepackage{pdfpages}
+\usepackage{ulem}
+
+\hypersetup{pdftitle={CAN Bus over Ethernet, SS2014}, pdfauthor={R. Löffler, C. Proske, M. Sharkhawy}}
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot[L]{CAN Bus over Ethernet}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+\usepackage[inner=2.5cm,outer=2.5cm,top=1.5cm,bottom=1.5cm,includeheadfoot]{geometry}
+
+\setkomafont{disposition}{\normalfont\bfseries}
+
+\parindent0cm
+\parskip2ex plus1ex minus1ex
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\newcommand{\nosection}[1]{%
+  \refstepcounter{section}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \markright{#1}}
+
+\newcommand{\Q}[1]{\vspace{6pt} \textbf{#1}}
+
+\begin{document}
+	
+	\maketitle
+	\vspace*{3.5 cm}
+	\tableofcontents
+
+	\clearpage
+
+	\include{content}
+
+\end{document}

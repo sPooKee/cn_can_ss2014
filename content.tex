@@ -1,6 +1,6 @@
 \section{CAN Bus}
 
-\subsection{CAN Geschichte}
+\subsection{Was ist CAN?}
 	
 Das Controller Area Network ist ein serielles Bus System und wurde
 1983, zur Vernetzung von Steuergeräten in Automobilen, von der Firma
@@ -12,7 +12,37 @@ lag darin, das mehrere Knoten über dieselbe Leitung Kommunizieren
 können. Alle Teilnehmer können Pakete priorisiert mit
 Kollisionserkennung auf den Bus legen, hierbei wird die Nachricht,
 nicht der Empfänger adressiert.
-	
+\\
+Die physikalischen Eigenschaften und der Formale Aufbau des CAN Busses
+wird in folgenden ISO Normen genau spezifiziert \citep[nach][]{WI1}:
+
+\begin{itemize}
+\item ISO 11898-1:2003 Road vehicles — Controller area network — Part 1: Data link layer and physical signalling
+\item ISO 11898-2:2003 Road vehicles — Controller area network — Part 2: High-speed medium access unit
+\item ISO 11898-3:2006 Road vehicles — Controller area network — Part 3: Low-speed, fault-tolerant, medium dependent interface
+\item ISO 11898-4:2004 Road vehicles — Controller area network — Part 4: Time-triggered communication
+\item ISO 11898-5:2007 Road vehicles — Controller area network — Part 5: High-speed medium access unit with low-power mode
+\item ISO/NP 11898-6 Road vehicles — Controller area network — Part 6: High-speed medium access unit with selective wake-up functionality
+\end{itemize}
+
+\subsubsection{Übertragungsgeschwindigkeiten}
+
+Aufgrund der Ausbreitungsgeschwindigkeit der Signale auf dem Bus, ist die Übetragungsgeschwindigkeit von der Leitungslänge abhängig. Die folgene Tabelle zeigt eine Zuordnung von Leitungslängen und Übertragunsgeschwindigkeiten.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lcr}
+		Bus Speed & Bus Length \\
+		\hline
+		1 Mbit/s & 40m \\
+		500 kbit/s & 100m \\
+		125 kbit/s & 500m \\
+		50 kbit/s & 1 km \\
+	\end{tabular}
+	\label{tab:speed}
+	\caption{Übertragungsgeschwindigkeiten}
+\end{table}
+
 \subsection{Busankoplung/Vernetzung von CAN-Knoten}
 	
 \subsection{CAN-Bus Pegel} Beim CAN-Bus erfolgt die Übertragung der
@@ -54,7 +84,7 @@ Standard Format und Extended Format unterschieden werden, die sich
 hauptsächlich in der Länge des Identifiers unterscheiden. Der Aufbau
 eines Daten Frames kann aus Abbildung \ref{data} entnommen werden.
 	
-\begin{figure}[htbp] 
+\begin{figure}[h] 
 \centering
 \includegraphics[width=0.7\textwidth]{figures/data-frame}
 \caption{Aufbau eines Daten-Frames \citep{HYC}} 
@@ -118,7 +148,7 @@ die Unterscheidung von den Error-Frames, die während der Übertragung
 einer Nachricht gesendet werden, sobald eben ein Fehler erkannt wurde.
 
 	
-\begin{figure}[htbp] 
+\begin{figure}[h] 
 \centering
 \includegraphics[width=0.7\textwidth]{figures/overload-frame}
 \caption{Aufbau eines Overload-Frames \citep{CBM}} 

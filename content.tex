@@ -27,10 +27,10 @@
 	\subsubsection{Daten Frame}
 	Die Daten-Frames dienen dem Transport von Daten und können bis zu 8 Byte an Nutzdaten enthalten. Bei den Daten-Frames kann zwischen Standard Format und Extended Format unterschieden werden, die sich hauptsächlich in der Länge des Identifiers unterscheiden. Der Aufbau eines Daten Frames kann aus Abbildung \ref{data} entnommen werden.
 	
-	\begin{figure}[h]
+	\begin{figure}[htbp]
 		\centering
 		\includegraphics[width=0.7\textwidth]{figures/data-frame}
-		\caption{Aufbau eines Daten-Frames}
+		\caption{Aufbau eines Daten-Frames \citep{HYC}}
 		\label{data}
 	\end{figure}
 	%Quelle: http://marco.guardigli.it/2010/10/hacking-your-car.html
@@ -47,12 +47,13 @@
 	Die Error-Flags sind abhängig vom Modus in dem sich ein CAN-knoten befindet. Ist der Knoten im Fehler-Status \textit{">error active"<} so setzt er die Error-Flags auf 6 dominante Bits. Befindet er sich hingegen im Fehler-Status \textit{">error passive"<} so sendet er 6 rezessive Bits.
 	
 	\subsubsection{Overload Frame}
-	Overload-Frames werden als Zwangspause zwischen Daten- und Remote-Frames genutzt. Dabei hat ein Overload-Frame das gleiche Format wie ein Active-Error-Frame. Wie in Abbildung \ref{overload} ersichtlich ist, besteht der Overload-Frame ebenfalls aus 2 Feldern: dem Overload-Flag (6 dominante Bits) und dem Overload-Delimiter (8 rezessive Bits). Ein Overload-Frame kann jedoch nur während eines Interframespaces gesendet werden. Dies ermöglicht die Unterscheidung von den Error-Frames, die während der Übertragung einer Nachricht gesendet werden, sobald eben ein Fehler erkannt wurde. 
+	Overload-Frames werden als Zwangspause zwischen Daten- und Remote-Frames genutzt. Dabei hat ein Overload-Frame das gleiche Format wie ein Active-Error-Frame. Wie in Abbildung \ref{overload} ersichtlich ist, besteht der Overload-Frame ebenfalls aus 2 Feldern: dem Overload-Flag (6 dominante Bits) und dem Overload-Delimiter (8 rezessive Bits). Ein Overload-Frame kann jedoch nur während eines Interframespaces gesendet werden. Dies ermöglicht die Unterscheidung von den Error-Frames, die während der Übertragung einer Nachricht gesendet werden, sobald eben ein Fehler erkannt wurde.
+
 	
-	\begin{figure}[h]
+	\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/overload-frame}
-	\caption{Aufbau eines Overload-Frames}
+	\caption{Aufbau eines Overload-Frames \citep{CBM}}
 	\label{overload}
 	\end{figure}
 	% Quelle: http://rs232-rs485.blogspot.co.at/2009/11/can-bus-message-frames-overload.html
@@ -75,6 +76,14 @@
 	
 	\subsection{Bestehende Lösungen}
 
-\section{Abbildungen}
 
-\section{Quellen}
+
+\newpage
+\addcontentsline{toc}{section}{Abbildungen}
+\listoffigures
+
+\newpage
+\addcontentsline{toc}{section}{Literatur}
+\bibliographystyle{abbrv}
+%\bibliographystyle{alphadin}
+\bibliography{quellen}

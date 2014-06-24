@@ -132,7 +132,7 @@ eines Daten Frames kann aus Abbildung \ref{data} entnommen werden.
 %Quelle: http://marco.guardigli.it/2010/10/hacking-your-car.html
 		
 Gestarted wird ein Frame durch das \textbf{SOF} (start-of-frame)
-bestehend aus einem dominanten Bit. Darauf folgt gleich das
+bestehend aus einem dominanten Bit, das der Synchronisation aller CAN-Knoten dient. Darauf folgt gleich das
 Arbitrationsfeld und dem Kontrollfeld. Abhängig vom Format bestehen
 diese aus \textbf{Basis Identifier} (11 Bits), \textbf{Extended
 Identifier} (18 Bit), einem \textbf{RTR}-Bit (remote transmission

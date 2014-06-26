@@ -195,23 +195,54 @@ einer Nachricht gesendet werden, sobald eben ein Fehler erkannt wurde.
 \end{figure} 
 % Quelle: http://rs232-rs485.blogspot.co.at/2009/11/can-bus-message-frames-overload.html
 	
-	\subsection{Zeichenkodierung}
+\subsection{Zeichenkodierung}
 	
-	\subsection{Bit-Timing}
+Auf der BUS Leitung werden die einzelnen Bits der Pakete über den 
+Non-Return-to-Zero Code (NRZ) codiert. Hierbei hat jeder Wert eines Bit 
+einen konstanten Zusatand auf der Leitung (siehe Abb. \ref{nrzcode}).
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.7\textwidth]{figures/nrzcode}
+\caption{NRZ-Code \citep{NRZ}} 
+\label{nrzcode}
+\end{figure} 
+
+Probleme bei dieser Codierung können auftreten, wenn mehrere gleiche Symbole in Folge
+gesendet werden. Abhilfe schafft hier Bit-Struffing, näheres dazu in Kapitel ~\ref{sec:bittiming}.
+
+Als Vergleich zur NRZ Codierung sollte man noch den Manchester-Code erwähnen, bei dem
+jeweils eine steigende, bzw. fallende Taktflanke einen Bit-Wert repräsentiert (Abb. \ref{mancode}).
+Ein Bitstuffing ist hier nicht nötig, da auch gleiche aufeinanderfolgende Bits durch eine Taktflanke 
+reproduzierbar sind.
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.7\textwidth]{figures/mancode}
+\caption{Manchester-Code \citep{MAN}} 
+\label{mancode}
+\end{figure} 
+
+\subsection{Bit-Timing}
+\label{sec:bittiming}
 	
-	\subsection{Synchronisatzion}
+\subsection{Synchronisatzion}
 	
-	\subsection{Buszugriffsverfahren}
+\subsection{Buszugriffsverfahren}
 	
-	\subsection{Fehlermanagement}
+\subsection{Fehlermanagement}
 	
-	\subsection{Sicherungsmechanismen/Fehlererkennung}
+\subsection{Sicherungsmechanismen/Fehlererkennung}
 
 \section{CAN Bus over Ethernet}
 	
-	\subsection{Probleme}
+\subsection{Probleme}
 	
-	\subsection{Bestehende Lösungen}
+\subsection{CAN Schnittstelle}
+	
+\subsection{CAN Ethernet Bridge}
+	
+\subsection{Bestehende Lösungen}
 
 
 

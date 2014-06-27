@@ -244,8 +244,33 @@ kann sich der Takt nur noch in einem spezifizierten Rahmen verschieben \citep[na
 \subsection{Probleme}
 	
 \subsection{CAN Schnittstelle}
-	
+
+CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anzubinden. Dies ermöglicht anderen Netzwerkgeräten mit den Teilnehmern im CAN-Bus und vice versa zu kommunizieren. Typischerweise wird eine CAN Schnittstelle verwendet, um den CAN Bus über Ethernet mit einem PC zu verbinden. Dies ermöglicht einen flexiblen Zugriff auf die CAN-Systeme über LAN oder sogar Internet. Die CAN Schnittstelle verhält sich dabei wie ein normaler CAN Knoten. \citep{STE}
+
+Die CAN Nachrichten werden vom CAN Gateway in Ethernet Packete eingepackt und dann über die Ethernet Verbindung gesendet. Dabei gehen jedoch wichtige Eigenschaften des CAN-Busses verloren. Zum Beispiel wird das ACK-Feld im CAN-Frame nicht mehr vom eigentlichen Empfänger, dem PC, sondern direkt von der CAN Schnittstelle gesetzt. Dadurch kann nicht sichergestellt werden, ob die Nachricht auch tatsächlich fehlerfrei beim PC angekommen ist.
+Abbildung \ref{gateway} zeigt die Topologie des Netzwerkes bestehend aus CAN-Netzwerk, CAN-Schnittstelle und Ethernet.
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.7\textwidth]{figures/can_gateway}
+\caption{CAN-Schnittstelle} 
+\label{gateway}
+\end{figure} 
+
 \subsection{CAN Ethernet Bridge}
+
+Die CAN Ethernet Bridge ermöglicht es, mehrere CAN Netzwerke miteinander über Ethernet (LAN oder Internet) zu verbinden. Abbildung \ref{bridge} zeigt zwei CAN Busse, die über Ethernet miteinander verbunden sind. Die CAN Bridges verhalten sich hierbei wieder wie CAN Teilnehmer. Auch hier gehen wichtige Eigenschaften des CAN-Busses, wie beispielsweise das Setzen des ACK-Feldes durch den Empfänger oder das eigentliche Zeitverhalten im jeweiligen CAN-Bus, verloren. Denn das ACK-Feld wird direkt von der Bridge und nicht von den eigentlichen Empfängern gesetzt.
+
+Vorteil einer solchen Entkopplung der CAN Netzwerke ist, dass eine Filterung der gesendeten Nachrichten möglich ist, und somit der Datenfluss zwischen den CAN Netzwerken beeinflussbar ist. So können beispielsweise Fehler abgefangen und begrenzt werden. Ein weiterer Vorteil einer Entkopplung ist, dass das Zeitverhalten der Busse getrennt betrachtet werden kann und für Analysen anstatt eines riesigen Busses nur einen Teil des Busses betrachtet werden muss.
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.8\textwidth]{figures/can_bridge}
+\caption{CAN Ethernet Bridge} 
+\label{bridge}
+\end{figure} 
+
+\subsection{Transparente Ethernet Bridge}
 	
 \subsection{Bestehende Lösungen}
 

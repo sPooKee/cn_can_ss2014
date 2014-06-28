@@ -374,6 +374,13 @@ oder per Hardware-Reset verlassen werden.
 \clearpage
 \section{CAN Bus over Ethernet}
 	
+\subsection{Probleme}
+
+Bei der Übertragung von CAN über Ethernet ergeben sich aufgrund der unterschiedlichen
+Funktionsweisen beider Systeme grundlegende Probleme.
+
+%TODO
+
 \subsection{CAN Schnittstelle}
 
 CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anzubinden. 
@@ -421,6 +428,88 @@ muss.
 \caption{CAN Ethernet Bridge} 
 \label{bridge}
 \end{figure}
+
+\subsubsection{Transparente Bridge}
+
+Wie bereits erwähnt, gehen bei dem bisher beschiebenen Bridge-System Eigenschaften
+des CAN Bus verloren. Es stellt sich die Frage, ob es möglich ist einen CAN-Bus
+streckenweise über Ethernet zu übertragen ohne dass Teilnehmer einen Unterschied zu
+einem gewöhnlichen CAN-Bus erkennen können.
+
+Um dies zu gewährleisten müssen alle Teilnehmer Nachrichten in der selben Reihenfolge
+erhalten. Weiters müssen auftretende Fehler im gesamten System erkannt werden. Das
+obige CAN Ethernet Bridge System erfüllt beide Anforderungen nicht, da die Bus
+Arbitration separat für die beiden verbundenen Busse durchgeführt wird und das
+ACK-Feld bereits von den Bridges gesetzt wird.
+
+Letzteres verhindert, dass eine Station, die in ihrem CAN-Bus alleine ist, von
+Übertragunsfehlern im anderen CAN-Bus erfährt.
+
+Die separate Durchführung der Bus Arbitration kann dazu führen, dass zwei Frames, die
+in unterschiedlichen CAN-Bussen zeitgleich gesendet werden, von Stationen im eigenen
+Bus vor dem anderen Frame empfangen werden. Damit wäre die Reihenfolge, in der die
+beiden Nachrichten empfangen werden dann in den beiden Bussen unterschiedlich.
+
+Um die beiden Busse transparent zu verbinden, muss daher das Erscheinen einzelner
+Bits in den Bussen so erfolgen, dass alle Stationen zur selben Zeit das gleiche Bit
+sampeln können.
+
+CAN sieht für unterschiedliche Bandbreiten verschiedene maximale Bus-Längen vor. Das
+Propagation Delay bezeichnet jene Zeit, die ein gesendetes Bit benötigt, um an jedem
+Punkt am Bus gelesen werden zu können. Um gleichzeitiges Lesen zu ermöglichen, muss
+das System mit der transparenten Ethernet Bridge das Propagation Delay für die
+maximale Bus-Länge bei der konfigurierten CAN-Bandbreite einhalten und alle Bits
+einzeln über die Ethernet-Verbindung übertragen.
+
+\paragraph{Beispiel}
+Gegeben sind zwei CAN-Busse mit $20 kBit/s$ Bandbreite. Diese beiden Busse sollen
+transparent über eine $100 m$ Fast Ethernet Leitung verbunden werden. Die maximale
+Bus-Länge $l$ bei $20 kBit/s$ beträgt $2500 m$. Davon ausgehend, dass die
+Ausbreitungsgeschwindigkeit in einem Kabel $v$ etwa $2/3$ der Lichtgeschwindigkeit beträgt,
+ist das Propagation Delay $t_{pc} = \frac{l}{v_a}$ in einem $2500 m$ langen Bus etwa
+$12,5 \mu s$.
+
+Da in Ethernet nur Frames mit mindestens $64 Byte$ übertragen werden können, und ein
+Frame vollständig gelesen werden muss, bevor man dessen Inhalt verwenden kann, muss
+für die Übertragung eines Bits über die Ethernet-Leitung nicht nur das Propagation
+Delay, sondern die gesamte Übertragungsdauer $t_t$ verwendet werden. Bei Fast
+Ethernet auf einer $100 m$ Strecke beträgt diese $5,62 \mu s$. Sie wird berechnet aus
+$\frac{Bits}{Bandbreite} + Propagation Delay$.
+
+Damit ergibt sich für das Propagation Delay des gesamten Systems $t_{pe} = t_{p_1} +
+t_{p_2} + t_t$, wobei $t_{p_1}$ und $t_{p_2}$ die Propagation Delays der beiden
+CAN-Busse sind. Um die oben genannten Anforderungen zu erfüllen, muss gelten $t_{pe}
+\leq t_{pc}$. Das maximale Propagation Delay der beiden CAN-Busse darf daher
+höchstens $t_{pc} - t_t = 6,88 \mu s$ betragen. Die maximal mögliche Gesamtlänge der
+beiden Busse schrumpft damit auf $1376 m$.
+
+Somit ergibt sich für das gesamte System eine maximale Länge von $1476 m$. Dies liegt
+deutlich unter den $2500 m$, die mit einem gewöhnlichen CAN-Bus möglich gewesen
+wären. Da die Ausbreitungsgeschwindigkeit für Ethernet und CAN gleich ist, ist es
+nicht möglich durch die Verwendung einer transparenten Ethernet Bridge eine längere
+Strecke abzudecken als mit CAN alleine.
+
+Obiges Beispiel geht von einigen vereinfachenden Annahmen aus:
+\begin{itemize}
+        \item Die Übertragung über die Ethernet-Leitung funktioniert immer
+                fehlerfrei.
+        \item Die Ethernet-Strecke hat nur zwei Teilnehmer (die beiden Bridges) und
+                wird im Full-Duplex Modus betrieben.
+        \item Die Bridges und sämtliche Netzwerkgeräte zwischen ihnen (z.B. Repeater)
+                verursachen keine Verzögerung.
+\end{itemize}
+
+Wie bereits erwähnt, lässt sich durch die transparente Ethernet Bridge kein Gewinn
+erzielen, da weder die maximale Länge, noch die Bandbreite des Systems erhöht werden
+kann.
+
+Allerdings ist es durch den hohen Overhead der Ethernet-Übertragung (ein Frame pro
+Bit) eventuell möglich mehrere synchronisierte CAN-Busse über die gleiche
+Ethernet-Leitung zu übertragen und so zu bündeln, um Kabel einzusparen.
+
+\subsection{Implementierungen}
+
+%TODO
 
 \newpage \addcontentsline{toc}{section}{Abbildungen} \listoffigures
 

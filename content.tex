@@ -52,33 +52,62 @@ maximaler Übertragunsgeschwindigkeit und andersrum.
 	\caption{Übertragungsgeschwindigkeiten}
 \end{table}
 
-\subsection{Busankoplung/Vernetzung von CAN-Knoten}
+\subsubsection{Einsatzgebiete}
+
+CAN-Protokolle haben sich in verschiedenen, vor allem sicherheitsrelevanten 
+Bereichen etabliert, bei denen es auf hohe Datensicherheit ankommt 
+\citep[nach][]{WI1}. Beispiele:
+
+\begin{itemize}
+\item Automobilindustrie (Vernetzung unterschiedlicher Steuergeräte, Sensoreinheiten 
+und sogar Multimediaeinheiten)
+\item Automatisierungstechnik (zeitkritische Sensoren im Feld, Überwachungstechnische 
+Einrichtungen)
+\item Aufzugsanlagen (Vernetzung der Steuerung mit verschiedenen Sensoren, Aktoren 
+und Aufzugsanlagen untereinander innerhalb einer Aufzugsgruppe)
+\item Medizintechnik (Magnetresonanz- und Computertomographen, Blutgewinnungsmaschinen,
+ Laborgeräte, Elektro-Rollstühle, Herzlungen-Maschinen)
+\item Flugzeugtechnik (Vernetzung innerhalb von Kabinen- und Flugführungssystemen)
+\item Raumfahrttechnik (vermehrte Verwendung in parallelen Busarchitekturen)
+\item Beschallungsanlage (wird für die Steuerung von digitalen Endstufen verwendet)
+\item Schienenfahrzeuge
+\item Schiffbau (Die DGzRS lässt in die neue Generation ihrer Seenotrettungskreuzer 
+Bus-Systeme einbauen.)
+\end{itemize}
+
+\subsection{Busankoplung}
 
 Der CAN Bus arbeitet nach dem Multi-Master Prinzip, wonach es jedem Knoten 
 möglich ist, mit jedem anderen Knoten zu kommunizieren. Üblicherweise in 
-Linientopologie verbunden, können laut ISO 119898 bis zu 32 Knoten damit
+Linientopologie aufgebaut, können laut ISO 119898 bis zu 32 Knoten damit
 verbunden werden. Die Signalübetragung erfolgt symmetrisch.
+
+Für die physische Verbindung zwischen den einzelnen CAN-Knoten werden in der Praxis
+häufig Unshielded Twisted Pair Leitungen verwendet. An den Enden des CAN-Netzwerks 
+sorgen Busabschlusswiderstände für die Vermeidung von Ausgleichsvorgängen (Reflexionen).
 
 \begin{figure}[h] 
 \centering
 \includegraphics[width=0.9\textwidth]{figures/cannet}
 \caption{Vernetzung von CAN Knoten \citep{VEC}} 
 \label{pic:cannet}
-\end{figure} 
+\end{figure}
+
+\subsection{CAN-Bus Pegel} 
 
 Auf dem physischen Medium werden die einzelnen Bits über Spannungsdifferenzen
-abgebildet. Man unterscheidet hier zwischen Highspeed-CAN und Lowspeed-CAN.
+abgebildet. Man unterscheidet hier zwischen Highspeed-CAN (Abb. \ref{pic:highcan}) 
+und Lowspeed-CAN (Abb. \ref{pic:lowcan}).
 
-\clearpage
-\subsection{CAN-Bus Pegel} Beim CAN-Bus erfolgt die Übertragung der
-Bits über 2 Pegel: 
-\begin{itemize} 
-\item Dominant 
-\item Rezessiv
-\end{itemize}
+Für die reibungslose Kommunikation, vor allem für den Buszugriff, die Fehlersignalisierung 
+und für das Acknowledgement, unterscheidet man zwischen einem dominanten und einem 
+rezessiven Buspegel. Der dominante Buspegel entspricht der logischen ``0''. Der rezessive 
+Buspegel entspricht der logischen ``1''. 
 
-Wenn beide Pegel gleichzeitig gesendet werden, so überschreibt immer
-der dominante Pegel den rezessiven Pegel.
+Wenn versciedene Teilnehmer gleichzeitig einen dominanten und einen rezessiven Pegel senden, 
+so überschreibt immer der dominante Pegel den rezessiven Pegel auf dem CAN-Bus (siehe 
+Kapitel \ref{sec:access}). Der rezessive Buspegel stellt sich nur dann ein, wenn alle CAN-Knoten 
+rezessiv senden. 
 
 \begin{figure}[h] 
 \centering
@@ -92,8 +121,10 @@ der dominante Pegel den rezessiven Pegel.
 \includegraphics[width=0.7\textwidth]{figures/lowcan}
 \caption{Loewspeed-CAN Buspegel \citep{VEC}} 
 \label{pic:lowcan}
-\end{figure} 
-	
+\end{figure}
+
+\clearpage
+\newpage
 \subsection{Bit Stuffing}
 \label{sec:bitstuffing} 
 Bit-Stuffing beim CAN-Bus bedeutet, dass
@@ -233,6 +264,7 @@ nachfolgenden abfallenden Flanken werden zur Soft-Synchronizierung verwendet. Du
 kann sich der Takt nur noch in einem spezifizierten Rahmen verschieben \citep[nach][]{BSY}.
 	
 \subsection{Buszugriffsverfahren}
+\label{sec:access}
 
 Durch die Multi-Master-Architektur des CAN-Bus kann es passieren, dass mehrere Knoten gleichzeitig veruschen
 Daten über den Bus zu senden denn jeder Knoten hat das Recht zu jederzeit und ohne Absprache Daten zu senden.
@@ -342,8 +374,6 @@ oder per Hardware-Reset verlassen werden.
 \clearpage
 \section{CAN Bus over Ethernet}
 	
-\subsection{Probleme}
-	
 \subsection{CAN Schnittstelle}
 
 CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anzubinden. 
@@ -390,13 +420,7 @@ muss.
 \includegraphics[width=0.8\textwidth]{figures/can_bridge}
 \caption{CAN Ethernet Bridge} 
 \label{bridge}
-\end{figure} 
-
-\subsection{Transparente Ethernet Bridge}
-	
-\subsection{Bestehende Lösungen}
-
-
+\end{figure}
 
 \newpage \addcontentsline{toc}{section}{Abbildungen} \listoffigures
 

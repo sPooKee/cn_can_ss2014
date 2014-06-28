@@ -379,9 +379,22 @@ oder per Hardware-Reset verlassen werden.
 Bei der Übertragung von CAN über Ethernet ergeben sich aufgrund der unterschiedlichen
 Funktionsweisen beider Systeme grundlegende Probleme.
 
-%TODO
+Bei CAN wird das zeitgleiche Senden von mehreren Stationen in Verbindung mit der
+Verwendung von dominanten und rezessiven Buspegeln benutzt um Übertragungsfehler zu
+erkennen, bzw. dem Sender mitzuteilen, (mit ACK-Feld oder Error Frames) und den
+Buszugriff zu regeln (durch die bereits beschriebene Bus Arbitration).
+
+Bei Ethernet gibt es keine dominanten und rezessiven Pegel. Weiters führt das
+gleichzeitige Senden mehrerer Teilnehmer dazu, dass für einen gewissen Zeitraum der
+Bus nicht benutzt werden kann, während bei CAN in diesem Fall keine zeitliche
+Verzögerung auftritt. Es gibt bei Ethernet keine Fehlerbehandlung. Diese muss von
+einem Protokoll auf einem höheren Layer übernommen werden.
+
+Wird CAN über Ethernet übertragen, muss das Fehlen dieser Eigenschaften (Bus
+Arbitration und Fehlerbehandlung) in Kauf genommen oder ersetzt werden.
 
 \subsection{CAN Schnittstelle}
+\label{l:interf}
 
 CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anzubinden. 
 Dies ermöglicht anderen Netzwerkgeräten mit den Teilnehmern im CAN-Bus und vice versa 
@@ -406,6 +419,7 @@ CAN-Schnittstelle und Ethernet.
 \end{figure} 
 
 \subsection{CAN Ethernet Bridge}
+\label{l:bridge}
 
 Die CAN Ethernet Bridge ermöglicht es, mehrere CAN Netzwerke miteinander über Ethernet 
 (LAN oder Internet) zu verbinden. Abbildung \ref{bridge} zeigt zwei CAN Busse, die über 
@@ -430,6 +444,7 @@ muss.
 \end{figure}
 
 \subsubsection{Transparente Bridge}
+\label{l:trans}
 
 Wie bereits erwähnt, gehen bei dem bisher beschiebenen Bridge-System Eigenschaften
 des CAN Bus verloren. Es stellt sich die Frage, ob es möglich ist einen CAN-Bus
@@ -466,15 +481,15 @@ Gegeben sind zwei CAN-Busse mit $20 kBit/s$ Bandbreite. Diese beiden Busse solle
 transparent über eine $100 m$ Fast Ethernet Leitung verbunden werden. Die maximale
 Bus-Länge $l$ bei $20 kBit/s$ beträgt $2500 m$. Davon ausgehend, dass die
 Ausbreitungsgeschwindigkeit in einem Kabel $v$ etwa $2/3$ der Lichtgeschwindigkeit beträgt,
-ist das Propagation Delay $t_{pc} = \frac{l}{v_a}$ in einem $2500 m$ langen Bus etwa
+ist das Propagation Delay $t_{pc} = \frac{l}{v}$ in einem $2500 m$ langen Bus etwa
 $12,5 \mu s$.
 
-Da in Ethernet nur Frames mit mindestens $64 Byte$ übertragen werden können, und ein
+Da in Ethernet nur Frames mit mindestens $64$ Byte übertragen werden können und ein
 Frame vollständig gelesen werden muss, bevor man dessen Inhalt verwenden kann, muss
 für die Übertragung eines Bits über die Ethernet-Leitung nicht nur das Propagation
 Delay, sondern die gesamte Übertragungsdauer $t_t$ verwendet werden. Bei Fast
 Ethernet auf einer $100 m$ Strecke beträgt diese $5,62 \mu s$. Sie wird berechnet aus
-$\frac{Bits}{Bandbreite} + Propagation Delay$.
+$\frac{Bits}{Bandbreite} + Propagation\: Delay$.
 
 Damit ergibt sich für das Propagation Delay des gesamten Systems $t_{pe} = t_{p_1} +
 t_{p_2} + t_t$, wobei $t_{p_1}$ und $t_{p_2}$ die Propagation Delays der beiden
@@ -509,7 +524,12 @@ Ethernet-Leitung zu übertragen und so zu bündeln, um Kabel einzusparen.
 
 \subsection{Implementierungen}
 
-%TODO
+Es gibt Implementierungen sowohl für die in \ref{l:interf} beschriebene CAN
+Schnittstelle, als auch für die in \ref{l:bridge} beschriebene Ethernet Bridge. Eine
+transparente Bridge (siehe \ref{l:trans} ist uns nicht bekannt.
+
+Das in \citep{STE} beschriebene Gerät kann entweder als Schnittstelle oder als Bridge
+verwendet werden.
 
 \newpage \addcontentsline{toc}{section}{Abbildungen} \listoffigures
 

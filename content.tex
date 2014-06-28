@@ -63,7 +63,7 @@ verbunden werden. Die Signalübetragung erfolgt symmetrisch.
 \centering
 \includegraphics[width=0.9\textwidth]{figures/cannet}
 \caption{Vernetzung von CAN Knoten \citep{VEC}} 
-\label{data}
+\label{pic:cannet}
 \end{figure} 
 
 Auf dem physischen Medium werden die einzelnen Bits über Spannungsdifferenzen
@@ -84,14 +84,14 @@ der dominante Pegel den rezessiven Pegel.
 \centering
 \includegraphics[width=0.7\textwidth]{figures/highcan}
 \caption{Highspeed-CAN Buspegel \citep{VEC}} 
-\label{data}
+\label{pic:highcan}
 \end{figure} 
 
 \begin{figure}[h] 
 \centering
 \includegraphics[width=0.7\textwidth]{figures/lowcan}
 \caption{Loewspeed-CAN Buspegel \citep{VEC}} 
-\label{data}
+\label{pic:lowcan}
 \end{figure} 
 	
 \subsection{Bit Stuffing}
@@ -257,8 +257,6 @@ Node 1 seine Übetragung und der Bus gehört Node 2.
 
 Der Identifier addressiert die Nachricht und dient gleichzeitig als Priorisierung. Jeder Identifier kann 
 nur einen Sender, jedoch mehrere Empfänger haben.
-	
-\subsection{Fehlermanagement}
 
 \subsection{Sicherungsmechanismen und Fehlererkennung}
 \label{sec:security}
@@ -308,6 +306,39 @@ Sollte ein Fehler erkannt werden, sendet der jeweilige CAN-Knoten ein Fehlersign
 besteht aus sechs dominanten Bits, welcher absichtlich die Bitstuffingregel verletzt. Durch den Error-Flag
 werden alle Teilnehmer des CAN über einen Fehler informiert (Bitstuffingfehler).
 
+\subsection{Fehlerverfolgung}
+
+Um die Netzweite Datenkonsitenz sicherzustellen, können, wie oben schon erwähnt, alle Knoten die einen 
+Fehler erkennen die Nachricht auf dem Bus abbrechen. Hierbei kann es auch vorkommen das dies 
+irrtümlicherweise geschieht.
+
+Jeder CAN-Controller besitzt eine Sendefehlerzähler (TEC, Transmit Error Counter) und einen 
+Empfängerfehlerzähler (REC, Receive Error Counter). Nach jeder erfolgreichen Übertragung eines 
+Data oder Remote Frames veringert sich der jeweilige Fehlerzähler (TEC=TEC-1; REC=REC-1). 
+Enteckt ein Knoten einen Fehler und sendet einen Error Flag wird der entsprechende Fehlerzähler 
+erhöht. Hierbei gilt für den Sender: TEC=TEC+8 für den fehlererkennenden Empfänger: REC=REC+1.
+Für den Fehler verursachenden Empfänger gilt zudem REC=REC+8.
+
+Je nach höhe des Fehlerzählers gibt es verschidene Zustände des CAN-Knotens. Zu Beginn befinden
+sich alle Knoten im ``Active Error''-State. In diesem Modus werden vom CAN-Knoten Error Flags beim 
+erkennen eines Fehlers gesendet. Sollte einer der Fehlerzähler (TEC oder REC) über 127 steigen, fällt 
+der CAN-Knoten in den ``Error Passive''-State. In deisem Zustand können entdeckte Fehler lediglich 
+mit sechs homogenen rezessiven Bits signalisiert werden. Fehlererkennenden Empfängern wird so die 
+Möglichkeit genommen, entdeckte Fehler zu globalisieren. Knoten, die sich im „Error Passive“-State 
+befinden, müssen beim Senden von zwei aufeinanderfolgenden Data oder Remote Frames zusätzlich 
+die „Suspend Transmission Time“ (8 Bits) abwarten.
+
+Sollte der TEC über 255 steigen geht der CAN-Knoten in den ``Bus Off''-State und trennt sich damit
+vom Bus ab. Der Zustand Bus Off kann nur durch Eingriff des Host (mit 128 x 11 Bit Zwangswartezeit) 
+oder per Hardware-Reset verlassen werden.
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.9\textwidth]{figures/errcount}
+\caption{Fehlerverfolgung \citep{VEC}} 
+\label{pic:errcount}
+\end{figure} 
+
 \clearpage
 \section{CAN Bus over Ethernet}
 	
@@ -315,10 +346,20 @@ werden alle Teilnehmer des CAN über einen Fehler informiert (Bitstuffingfehler)
 	
 \subsection{CAN Schnittstelle}
 
-CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anzubinden. Dies ermöglicht anderen Netzwerkgeräten mit den Teilnehmern im CAN-Bus und vice versa zu kommunizieren. Typischerweise wird eine CAN Schnittstelle verwendet, um den CAN Bus über Ethernet mit einem PC zu verbinden. Dies ermöglicht einen flexiblen Zugriff auf die CAN-Systeme über LAN oder sogar Internet. Die CAN Schnittstelle verhält sich dabei wie ein normaler CAN Knoten. \citep{STE}
+CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anzubinden. 
+Dies ermöglicht anderen Netzwerkgeräten mit den Teilnehmern im CAN-Bus und vice versa 
+zu kommunizieren. Typischerweise wird eine CAN Schnittstelle verwendet, um den CAN Bus 
+über Ethernet mit einem PC zu verbinden. Dies ermöglicht einen flexiblen Zugriff auf die 
+CAN-Systeme über LAN oder sogar Internet. Die CAN Schnittstelle verhält sich dabei wie 
+ein normaler CAN Knoten. \citep{STE}
 
-Die CAN Nachrichten werden vom CAN Gateway in Ethernet Packete eingepackt und dann über die Ethernet Verbindung gesendet. Dabei gehen jedoch wichtige Eigenschaften des CAN-Busses verloren. Zum Beispiel wird das ACK-Feld im CAN-Frame nicht mehr vom eigentlichen Empfänger, dem PC, sondern direkt von der CAN Schnittstelle gesetzt. Dadurch kann nicht sichergestellt werden, ob die Nachricht auch tatsächlich fehlerfrei beim PC angekommen ist.
-Abbildung \ref{gateway} zeigt die Topologie des Netzwerkes bestehend aus CAN-Netzwerk, CAN-Schnittstelle und Ethernet.
+Die CAN Nachrichten werden vom CAN Gateway in Ethernet Packete eingepackt und dann 
+über die Ethernet Verbindung gesendet. Dabei gehen jedoch wichtige Eigenschaften des 
+CAN-Busses verloren. Zum Beispiel wird das ACK-Feld im CAN-Frame nicht mehr vom 
+eigentlichen Empfänger, dem PC, sondern direkt von der CAN Schnittstelle gesetzt. Dadurch 
+kann nicht sichergestellt werden, ob die Nachricht auch tatsächlich fehlerfrei beim PC angekommen ist.
+Abbildung \ref{gateway} zeigt die Topologie des Netzwerkes bestehend aus CAN-Netzwerk, 
+CAN-Schnittstelle und Ethernet.
 
 \begin{figure}[h] 
 \centering
@@ -329,9 +370,20 @@ Abbildung \ref{gateway} zeigt die Topologie des Netzwerkes bestehend aus CAN-Net
 
 \subsection{CAN Ethernet Bridge}
 
-Die CAN Ethernet Bridge ermöglicht es, mehrere CAN Netzwerke miteinander über Ethernet (LAN oder Internet) zu verbinden. Abbildung \ref{bridge} zeigt zwei CAN Busse, die über Ethernet miteinander verbunden sind. Die CAN Bridges verhalten sich hierbei wieder wie CAN Teilnehmer. Auch hier gehen wichtige Eigenschaften des CAN-Busses, wie beispielsweise das Setzen des ACK-Feldes durch den Empfänger oder das eigentliche Zeitverhalten im jeweiligen CAN-Bus, verloren. Denn das ACK-Feld wird direkt von der Bridge und nicht von den eigentlichen Empfängern gesetzt.
+Die CAN Ethernet Bridge ermöglicht es, mehrere CAN Netzwerke miteinander über Ethernet 
+(LAN oder Internet) zu verbinden. Abbildung \ref{bridge} zeigt zwei CAN Busse, die über 
+Ethernet miteinander verbunden sind. Die CAN Bridges verhalten sich hierbei wieder wie 
+CAN Teilnehmer. Auch hier gehen wichtige Eigenschaften des CAN-Busses, wie beispielsweise 
+das Setzen des ACK-Feldes durch den Empfänger oder das eigentliche Zeitverhalten im 
+jeweiligen CAN-Bus, verloren. Denn das ACK-Feld wird direkt von der Bridge und nicht von 
+den eigentlichen Empfängern gesetzt.
 
-Vorteil einer solchen Entkopplung der CAN Netzwerke ist, dass eine Filterung der gesendeten Nachrichten möglich ist, und somit der Datenfluss zwischen den CAN Netzwerken beeinflussbar ist. So können beispielsweise Fehler abgefangen und begrenzt werden. Ein weiterer Vorteil einer Entkopplung ist, dass das Zeitverhalten der Busse getrennt betrachtet werden kann und für Analysen anstatt eines riesigen Busses nur einen Teil des Busses betrachtet werden muss.
+Vorteil einer solchen Entkopplung der CAN Netzwerke ist, dass eine Filterung der gesendeten 
+Nachrichten möglich ist, und somit der Datenfluss zwischen den CAN Netzwerken beeinflussbar 
+ist. So können beispielsweise Fehler abgefangen und begrenzt werden. Ein weiterer Vorteil 
+einer Entkopplung ist, dass das Zeitverhalten der Busse getrennt betrachtet werden kann 
+und für Analysen anstatt eines riesigen Busses nur einen Teil des Busses betrachtet werden 
+muss.
 
 \begin{figure}[h] 
 \centering

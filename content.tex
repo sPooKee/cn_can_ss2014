@@ -61,7 +61,7 @@ verbunden werden. Die Signalübetragung erfolgt symmetrisch.
 
 \begin{figure}[h] 
 \centering
-\includegraphics[width=0.7\textwidth]{figures/cannet}
+\includegraphics[width=0.9\textwidth]{figures/cannet}
 \caption{Vernetzung von CAN Knoten \citep{VEC}} 
 \label{data}
 \end{figure} 
@@ -94,7 +94,8 @@ der dominante Pegel den rezessiven Pegel.
 \label{data}
 \end{figure} 
 	
-\subsection{Bit Stuffing} 
+\subsection{Bit Stuffing}
+\label{sec:bitstuffing} 
 Bit-Stuffing beim CAN-Bus bedeutet, dass
 nach 5 Bits mit gleichem Pegel ein ">Stuff Bit"< mit inversem Pegel
 eingefügt wird. Die Empfänger filtern diese Stuff-Bits, dann nach dem
@@ -125,7 +126,7 @@ eines Daten Frames kann aus Abbildung \ref{data} entnommen werden.
 	
 \begin{figure}[h] 
 \centering
-\includegraphics[width=0.7\textwidth]{figures/data-frame}
+\includegraphics[width=0.9\textwidth]{figures/data-frame}
 \caption{Aufbau eines Daten-Frames \citep{HYC}} 
 \label{data}
 \end{figure} 
@@ -203,7 +204,7 @@ einen konstanten Zusatand auf der Leitung (siehe Abb. \ref{nrzcode}).
 
 \begin{figure}[h] 
 \centering
-\includegraphics[width=0.7\textwidth]{figures/nrzcode}
+\includegraphics[width=0.9\textwidth]{figures/nrzcode}
 \caption{NRZ-Code \citep{NRZ}} 
 \label{nrzcode}
 \end{figure} 
@@ -218,7 +219,7 @@ reproduzierbar sind.
 
 \begin{figure}[h] 
 \centering
-\includegraphics[width=0.7\textwidth]{figures/mancode}
+\includegraphics[width=0.9\textwidth]{figures/mancode}
 \caption{Manchester-Code \citep{MAN}} 
 \label{mancode}
 \end{figure} 
@@ -232,13 +233,82 @@ nachfolgenden abfallenden Flanken werden zur Soft-Synchronizierung verwendet. Du
 kann sich der Takt nur noch in einem spezifizierten Rahmen verschieben \citep[nach][]{BSY}.
 	
 \subsection{Buszugriffsverfahren}
+
+Durch die Multi-Master-Architektur des CAN-Bus kann es passieren, dass mehrere Knoten gleichzeitig veruschen
+Daten über den Bus zu senden denn jeder Knoten hat das Recht zu jederzeit und ohne Absprache Daten zu senden.
+Um dieses Szenario zu vermeiden, bzw. aufzulösen verwendet man CMSA/CA (Carrier Sense Multiple 
+Access/Collision Avoidance). Bei diesem Verfahren ``lauscht'' jeder Teilnehmer vor dem Senden ob der Bus frei ist.
+
+Sollte es durch simultanen Zugriff dennoch zu einer Collision kommen, wird durch eine bitweise Arbitrierung.
+Über den Basis Identifier im Arbitrationsfeld des Pakets wird dann entschieden, wer den Zugriff auf den Bus bekommt.
+Entscheidend ist hier, welche Nachricht die höhere Priorität besitzt, bzw. als erstes ein rezessives Bit sendet.
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.9\textwidth]{figures/bitwisearb}
+\caption{Beispiel: Bitweise Arbitrierung \citep{BWA}} 
+\label{pic:bitwise}
+\end{figure} 
+
+Abbildung \ref{pic:bitwise} zeigt ein Beispiel der bitweisen Arbitrieung. An Punkt (1) beginnen beide 
+Knoten gleichzeitig mit dem senden Ihres Identifieres. Node 2 sendet an der 5. Bistelle des Identifiers 
+ein dominantes Bit, wohingegen Node 1 ein rezessives Bit sendet. An diesem Punkt (2) beendet 
+Node 1 seine Übetragung und der Bus gehört Node 2.
+
+Der Identifier addressiert die Nachricht und dient gleichzeitig als Priorisierung. Jeder Identifier kann 
+nur einen Sender, jedoch mehrere Empfänger haben.
 	
 \subsection{Fehlermanagement}
-	
+
 \subsection{Sicherungsmechanismen und Fehlererkennung}
 \label{sec:security}
 
-\newpage
+Für die Fehlererkennung stehen gleich mehrere Verfahren zur Verfügung:
+
+\subsubsection{Bitmonitoring}
+
+Dies ist Aufgabe des Senders. Er vergleicht ob das gesendete Bit mit dem Buspegel übereinstimmt. 
+Sollten diese nicht übereinstimmen wird mit die Fehlerbehandung eingeleitet. Auf das Arbitration Field 
+und den ACK-Slot findet dieses Verfahren keine Anwendung.
+
+\subsubsection{Stuff Check}
+
+Dies ist Aufgabe des Empfängers. Sollte diese sechs homogene Bits lesen, liegt ein Bitstuffing-Fehler 
+vor (siehe Kapitel \ref{sec:bitstuffing}). Auch diese zieht eine Fehlerbehandlung nach sich.
+
+\subsubsection{Form Check}
+
+Auch dies ist Aufgabe des Empfängers. Er vergleicht den ankommenden Bitstrom mit dem Datenformat.
+Ein dominantes Delimiter-Bit (CRC oder ACK) oder ein dominantes Bit im EOF signalisiert einen 
+Formatfehler und leitet eine Fehlerbehandlung ein.
+
+\subsubsection{Cyclic Redundancy Check}
+
+Der Empfänger überprüft die ankommenden Bits mit der CRC Sequence. Ein Fehler leitet eine 
+Fehlerbehandlung ein.
+
+\subsubsection{ACK Check}
+	
+Sollte das im ACK Slot gesendete rezessive Bit nicht von mindestens einem Empfänger überschrieben 
+werden, liegt ein Bestätigungsfehler vor, der eine Fehlerbehandlung nach sich zieht.
+
+Abbildung \ref{pic:errcheck} verdeutlicht das Auftreten der jeweiligen Fehler in den einzelnen Bereichen
+einer Nachricht.
+
+\begin{figure}[h] 
+\centering
+\includegraphics[width=0.9\textwidth]{figures/errcheck}
+\caption{Fehlererkennung \citep{VEC}} 
+\label{pic:errcheck}
+\end{figure} 
+
+\subsubsection{Fehlerbehandlung}
+
+Sollte ein Fehler erkannt werden, sendet der jeweilige CAN-Knoten ein Fehlersignal (Error-Flag). Dieser
+besteht aus sechs dominanten Bits, welcher absichtlich die Bitstuffingregel verletzt. Durch den Error-Flag
+werden alle Teilnehmer des CAN über einen Fehler informiert (Bitstuffingfehler).
+
+\clearpage
 \section{CAN Bus over Ethernet}
 	
 \subsection{Probleme}

@@ -8,12 +8,12 @@ Bosch GmbH entwickelt. Doch nicht nur in der Automobilindustrie,
 sondern auch in der Medizintechnik, Flug- und Raumfahrttechnik sowie
 in Aufzuganlagen und im Schiffsbau, kann man auf einen CAN Bus stoßen
 \citep[nach][]{WI1}. Der Vorteil gegenüber der herkömmlichen Verkablung
-lag darin, das mehrere Knoten über dieselbe Leitung Kommunizieren
+lag darin, das mehrere Knoten über dieselbe Leitung kommunizieren
 können. Alle Teilnehmer können Pakete priorisiert mit
 Kollisionserkennung auf den Bus legen, hierbei wird die Nachricht,
-nicht der Empfänger adressiert.
+nicht der Empfänger, adressiert.
 \\
-Die physikalischen Eigenschaften und der Formale Aufbau des CAN Busses
+Die physikalischen Eigenschaften und der formale Aufbau des CAN Busses
 wird in folgenden ISO Normen genau spezifiziert \citep[nach][]{WI1}:
 
 \begin{itemize}
@@ -163,7 +163,7 @@ eines Daten Frames kann aus Abbildung \ref{data} entnommen werden.
 \end{figure} 
 %Quelle: http://marco.guardigli.it/2010/10/hacking-your-car.html
 		
-Gestarted wird ein Frame durch das \textbf{SOF} (start-of-frame)
+Gestarted wird ein Frame durch den \textbf{SOF} (start-of-frame)
 bestehend aus einem dominanten Bit, das der Synchronisation aller CAN-Knoten dient. Darauf folgt gleich das
 Arbitrationsfeld und das Kontrollfeld. Abhängig vom Format bestehen
 diese aus \textbf{Basis Identifier} (11 Bits), \textbf{Extended
@@ -176,7 +176,7 @@ Kontrollfeld befindet sich neben 1-2 reservierten (aktuell nicht
 verwendeten) Bits der aus 4 Bits bestehende \textbf{DLC} (data length
 code), der die Länge des nachfolgenden \textbf{Datenfeldes} angibt.\\
 Wie bereits erwähnt können mit den Daten-Frames bis zu 8 Byte, also 64
-Bit, übertragen werden. dies kann jedoch nur in Einheiten von 8 Bits
+Bit, übertragen werden. Dies kann jedoch nur in Einheiten von 8 Bits
 geschehen. Anschließend an das Datenfeld ist das CRC-Feld (cyclic
 redundancy check; Prüfsummenfeld) bestehend aus 16 Bit (15 Bit + 1
 rezessives Delimiter-Bit). Des weiteren enthält ein Daten-Frame ein
@@ -188,7 +188,7 @@ Senders. Im Falle einer negativen Quittierung (rezessiver Pegel) muss
 der Knoten, der den Fehler erkannt hat, nach dem ACK-Delimiter einen
 Error-Frame aussenden.\\Das Ende des Frames wird mit 7 rezessiven Bits
 dem \textbf{EOF} (end of frame) angezeigt. Anschließend an den Frame
-muss ein ITM-Package (intermission oder inter-frame-space) bestehend
+muss ein ITM-Package (Intermission oder Inter-Frame-Space) bestehend
 aus mindestens 3 rezessiven Bits gesendet werden.
 	
 \subsubsection{Remote Frame} Mit Hilfe der Remote-Frames können
@@ -254,19 +254,19 @@ reproduzierbar sind.
 \label{mancode}
 \end{figure} 
 	
-\subsection{Synchronisatzion}
+\subsection{Synchronisation}
 
 Da die CAN Knoten nur eine gemeinsame Baud-Rate, jedoch keinen gemeinsamen Takt besitzen, 
-wird der Daten-Frame selbst zur Synchronization verwendet. Es gibt eine Hard- und eine Soft-Synchronization,
-wobei die Hard-Synchronization die fallende Flanke des Startbits zur Synchronizierung verwendet. Alle 
-nachfolgenden abfallenden Flanken werden zur Soft-Synchronizierung verwendet. Durch die Soft-Synchronizierung
+wird der Daten-Frame selbst zur Synchronisation verwendet. Es gibt eine Hard- und eine Soft-Synchronisation,
+wobei die Hard-Synchronisation die fallende Flanke des Startbits zur Synchronisierung verwendet. Alle 
+nachfolgenden abfallenden Flanken werden zur Soft-Synchronisierung verwendet. Durch die Soft-Synchronisierung
 kann sich der Takt nur noch in einem spezifizierten Rahmen verschieben \citep[nach][]{BSY}.
 	
 \subsection{Buszugriffsverfahren}
 \label{sec:access}
 
 Durch die Multi-Master-Architektur des CAN-Bus kann es passieren, dass mehrere Knoten gleichzeitig versuchen
-Daten über den Bus zu senden, denn jeder Knoten hat das Recht zu jederzeit und ohne Absprache Daten zu senden.
+Daten über den Bus zu senden, denn jeder Knoten hat das Recht zu jeder Zeit und ohne Absprache Daten zu senden.
 Um dieses Szenario zu vermeiden bzw. aufzulösen, verwendet man CSMA/CA (Carrier Sense Multiple 
 Access/Collision Avoidance). Bei diesem Verfahren ``lauscht'' jeder Teilnehmer vor dem Senden ob der Bus frei ist.
 
@@ -282,7 +282,7 @@ Entscheidend ist hier, welche Nachricht die höhere Priorität besitzt, bzw. als
 \end{figure} 
 
 Abbildung \ref{pic:bitwise} zeigt ein Beispiel der bitweisen Arbitrierung. An Punkt (1) beginnen beide 
-Knoten gleichzeitig mit dem senden Ihres Identifieres. Node 2 sendet an der 5. Bitstelle des Identifiers 
+Knoten gleichzeitig mit dem senden ihres Identifieres. Node 2 sendet an der 5. Bitstelle des Identifiers 
 ein dominantes Bit, wohingegen Node 1 ein rezessives Bit sendet. An diesem Punkt (2) beendet 
 Node 1 seine Übertragung und der Bus gehört Node 2.
 
@@ -297,13 +297,13 @@ Für die Fehlererkennung stehen gleich mehrere Verfahren zur Verfügung:
 \subsubsection{Bitmonitoring}
 
 Dies ist Aufgabe des Senders. Er vergleicht ob das gesendete Bit mit dem Buspegel übereinstimmt. 
-Sollten diese nicht übereinstimmen wird mit die Fehlerbehandlung eingeleitet. Auf das Arbitration Field 
+Sollten diese nicht übereinstimmen wird die Fehlerbehandlung eingeleitet. Auf das Arbitration Field 
 und den ACK-Slot findet dieses Verfahren keine Anwendung.
 
 \subsubsection{Stuff Check}
 
-Dies ist Aufgabe des Empfängers. Sollte diese sechs homogene Bits lesen, liegt ein Bitstuffing-Fehler 
-vor (siehe Kapitel \ref{sec:bitstuffing}). Auch diese zieht eine Fehlerbehandlung nach sich.
+Dies ist Aufgabe des Empfängers. Sollte dieser sechs homogene Bits lesen, liegt ein Bitstuffing-Fehler 
+vor (siehe Kapitel \ref{sec:bitstuffing}). Auch dieser zieht eine Fehlerbehandlung nach sich.
 
 \subsubsection{Form Check}
 
@@ -339,11 +339,11 @@ werden alle Teilnehmer des CAN über einen Fehler informiert (Bitstuffingfehler)
 
 \subsection{Fehlerverfolgung}
 
-Um die Netzweite Datenkonsitenz sicherzustellen, können, wie oben schon erwähnt, alle Knoten die einen 
-Fehler erkennen die Nachricht auf dem Bus abbrechen. Hierbei kann es auch vorkommen das dies 
-irrtümlicherweise geschieht.
+Um die Netzweite Datenkonsitenz sicherzustellen, können, wie oben schon erwähnt, alle
+Knoten, die einen Fehler erkennen, die Nachricht auf dem Bus abbrechen. Hierbei kann
+es auch vorkommen, dass dies irrtümlicherweise geschieht.
 
-Jeder CAN-Controller besitzt eine Sendefehlerzähler (TEC, Transmit Error Counter) und einen 
+Jeder CAN-Controller besitzt einen Sendefehlerzähler (TEC, Transmit Error Counter) und einen 
 Empfängerfehlerzähler (REC, Receive Error Counter). Nach jeder erfolgreichen Übertragung eines 
 Data oder Remote Frames verringert sich der jeweilige Fehlerzähler (TEC=TEC-1; REC=REC-1). 
 Entdeckt ein Knoten einen Fehler und sendet einen Error Flag wird der entsprechende Fehlerzähler 
@@ -352,7 +352,7 @@ Für den Fehler verursachenden Empfänger gilt zudem REC=REC+8.
 
 Je nach Höhe des Fehlerzählers gibt es verschiedene Zustände des CAN-Knotens. Zu Beginn befinden
 sich alle Knoten im ``Active Error''-State. In diesem Modus werden vom CAN-Knoten Error Flags beim 
-erkennen eines Fehlers gesendet. Sollte einer der Fehlerzähler (TEC oder REC) über 127 steigen, fällt 
+Erkennen eines Fehlers gesendet. Sollte einer der Fehlerzähler (TEC oder REC) über 127 steigen, fällt 
 der CAN-Knoten in den ``Error Passive''-State. In diesem Zustand können entdeckte Fehler lediglich 
 mit sechs homogenen rezessiven Bits signalisiert werden. Fehlererkennenden Empfängern wird so die 
 Möglichkeit genommen, entdeckte Fehler zu globalisieren. Knoten, die sich im „Error Passive“-State 
@@ -399,10 +399,10 @@ CAN Schnittstellen erlauben es, eine CAN-Bus Struktur an Ethernet Topologien anz
 Dies ermöglicht anderen Netzwerkgeräten mit den Teilnehmern im CAN-Bus und vice versa 
 zu kommunizieren. Typischerweise wird eine CAN Schnittstelle verwendet, um den CAN Bus 
 über Ethernet mit einem PC zu verbinden. Dies ermöglicht einen flexiblen Zugriff auf die 
-CAN-Systeme über LAN oder sogar Internet. Die CAN Schnittstelle verhält sich dabei wie 
+CAN-Systeme über LAN oder sogar das Internet. Die CAN Schnittstelle verhält sich dabei wie 
 ein normaler CAN Knoten. \citep{STE}
 
-Die CAN Nachrichten werden vom CAN Gateway in Ethernet Pakete eingepackt und dann 
+Die CAN Nachrichten werden vom CAN Gateway in Ethernet Frames eingepackt und dann 
 über die Ethernet Verbindung gesendet. Dabei gehen jedoch wichtige Eigenschaften des 
 CAN-Busses verloren. Zum Beispiel wird das ACK-Feld im CAN-Frame nicht mehr vom 
 eigentlichen Empfänger, dem PC, sondern direkt von der CAN Schnittstelle gesetzt. Dadurch 
@@ -421,18 +421,19 @@ CAN-Schnittstelle und Ethernet.
 \label{l:bridge}
 
 Die CAN Ethernet Bridge ermöglicht es, mehrere CAN Netzwerke miteinander über Ethernet 
-(LAN oder Internet) zu verbinden. Abbildung \ref{bridge} zeigt zwei CAN Busse, die über 
+zu verbinden. Abbildung \ref{bridge} zeigt zwei CAN Busse, die über 
 Ethernet miteinander verbunden sind. Die CAN Bridges verhalten sich hierbei wieder wie 
 CAN Teilnehmer. Auch hier gehen wichtige Eigenschaften des CAN-Busses, wie beispielsweise 
 das Setzen des ACK-Feldes durch den Empfänger, oder das eigentliche Zeitverhalten im 
 jeweiligen CAN-Bus, verloren. Denn das ACK-Feld wird direkt von der Bridge und nicht von 
-den eigentlichen Empfängern gesetzt.
+den eigentlichen Empfängern gesetzt. Bus Arbitration wird in den beiden Bussen
+getrennt durchgeführt.
 
 Vorteil einer solchen Entkopplung der CAN Netzwerke ist, dass eine Filterung der gesendeten 
-Nachrichten möglich ist, und somit der Datenfluss zwischen den CAN Netzwerken beeinflussbar 
+Nachrichten möglich ist und somit der Datenfluss zwischen den CAN Netzwerken beeinflussbar 
 ist. So können beispielsweise Fehler abgefangen und begrenzt werden. Ein weiterer Vorteil 
 einer Entkopplung ist, dass das Zeitverhalten der Busse getrennt betrachtet werden kann 
-und für Analysen anstatt eines riesigen Busses nur einen Teil des Busses betrachtet werden 
+und für Analysen anstatt eines riesigen Busses nur ein Teil des Busses betrachtet werden 
 muss.
 
 \begin{figure}[h] 
@@ -447,7 +448,7 @@ muss.
 
 Wie bereits erwähnt, gehen bei dem bisher beschriebenen Bridge-System Eigenschaften
 des CAN Bus verloren. Es stellt sich die Frage, ob es möglich ist einen CAN-Bus
-streckenweise über Ethernet zu übertragen ohne dass Teilnehmer einen Unterschied zu
+streckenweise über Ethernet zu übertragen, ohne dass Teilnehmer einen Unterschied zu
 einem gewöhnlichen CAN-Bus erkennen können.
 
 Um dies zu gewährleisten müssen alle Teilnehmer Nachrichten in der selben Reihenfolge
@@ -497,11 +498,11 @@ CAN-Busse sind. Um die oben genannten Anforderungen zu erfüllen, muss gelten $t
 höchstens $t_{pc} - t_t = 6,88 \mu s$ betragen. Die maximal mögliche Gesamtlänge der
 beiden Busse schrumpft damit auf $1376 m$.
 
-Somit ergibt sich für das gesamte System eine maximale Länge von $1476 m$. Dies liegt
-deutlich unter den $2500 m$, die mit einem gewöhnlichen CAN-Bus möglich gewesen
-wären. Da die Ausbreitungsgeschwindigkeit für Ethernet und CAN gleich ist, ist es
-nicht möglich durch die Verwendung einer transparenten Ethernet Bridge eine längere
-Strecke abzudecken als mit CAN alleine.
+Somit ergibt sich für das gesamte System (CAN-Busse und $100 m$ Fast Ethernet) eine
+maximale Länge von $1476 m$. Dies liegt deutlich unter den $2500 m$, die mit einem
+gewöhnlichen CAN-Bus möglich gewesen wären. Da die Ausbreitungsgeschwindigkeit für
+Ethernet und CAN gleich ist, ist es nicht möglich durch die Verwendung einer
+transparenten Ethernet Bridge eine längere Strecke abzudecken als mit CAN alleine.
 
 Obiges Beispiel geht von einigen vereinfachenden Annahmen aus:
 \begin{itemize}
@@ -519,7 +520,8 @@ kann.
 
 Allerdings ist es durch den hohen Overhead der Ethernet-Übertragung (ein Frame pro
 Bit) eventuell möglich mehrere synchronisierte CAN-Busse über die gleiche
-Ethernet-Leitung zu übertragen und so zu bündeln, um Kabel einzusparen.
+Ethernet-Leitung zu übertragen. Diese könnten somit gebündelt werden und man kann
+Kabel einsparen.
 
 \subsection{Implementierungen}
 
